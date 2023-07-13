@@ -31,11 +31,7 @@ public:
 		delete[] this->ptr;
 		this->ptr = nullptr;
 		this->size = obj.size;
-		this->ptr = new int[this->size];
-		for (int i = 0; i < this->size; i++) {
-			this->ptr[i] = obj.ptr[i];
-		}
-		delete[] obj.ptr;
+		this->ptr = obj.ptr;
 		obj.ptr = nullptr;
 		obj.size = 0;
 	}
@@ -57,11 +53,7 @@ public:
 			delete[] this->ptr;
 			this->ptr = nullptr;
 			this->size = obj.size;
-			this->ptr = new int[this->size];
-			for (int i = 0; i < this->size; i++) {
-				this->ptr[i] = obj.ptr[i];
-			}
-			delete[] obj.ptr;
+			this->ptr = obj.ptr;
 			obj.ptr = nullptr;
 			obj.size = 0;
 		}
