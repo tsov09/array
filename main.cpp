@@ -26,6 +26,19 @@ public:
 			this->ptr[i] = obj.ptr[i];
 		}
 	}
+	Array(Array&& obj) {
+		std::cout << "Array move con-tor" << std::endl;
+		delete[] this->ptr;
+		this->ptr = nullptr;
+		this->size = obj.size;
+		this->ptr = new int[this->size];
+		for (int i = 0; i < this->size; i++) {
+			this->ptr[i] = obj.ptr[i];
+		}
+		delete[] obj.ptr;
+		obj.ptr = nullptr;
+		obj.size = 0;
+	}
 	Array& operator = (const Array& obj) {
 		if (this != &obj) {
 			delete[] this->ptr;
@@ -35,6 +48,22 @@ public:
 			for (int i = 0; i < this->size; i++) {
 				this->ptr[i] = obj.ptr[i];
 			}
+		}
+		return *this;
+	}
+	Array& operator = (Array&& obj) {
+		std::cout << "Array op. move assign." << std::endl;
+		if (this != &obj) {
+			delete[] this->ptr;
+			this->ptr = nullptr;
+			this->size = obj.size;
+			this->ptr = new int[this->size];
+			for (int i = 0; i < this->size; i++) {
+				this->ptr[i] = obj.ptr[i];
+			}
+			delete[] obj.ptr;
+			obj.ptr = nullptr;
+			obj.size = 0;
 		}
 		return *this;
 	}
@@ -77,17 +106,15 @@ public:
 
 int main() {
 	srand(time(NULL));
-	int a = 15;
-	int b = 17;
-	Array arr;
-
+	std::cout << std::endl;
+	Array arr = std::move(Array(5));
 	std::cout << std::endl;
 	arr.print();
+	std::cout << std::endl << std::endl;
+	arr = std::move(Array(10));
 	std::cout << std::endl;
-	std::cout << std::endl;
-	std::cout << a + 1 << " - " << arr[a] << std::endl;
-	std::cout << b + 1 << " - " << arr.gen_element(b) << std::endl;
-
+	arr.print();
+	std::cout << std::endl << std::endl;
 
 	return 0;
 }
