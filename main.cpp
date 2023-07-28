@@ -1,32 +1,35 @@
+
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
 
+
+template <class T>
 class Array {
 public:
 	Array() {
 		this->size = 10;
-		this->ptr = new int[this->size];
+		this->ptr = new T[this->size];
 		this->fill_array();
 	}
 	Array(int size) {
 		this->size = size;
-		this->ptr = new int[this->size];
+		this->ptr = new T[this->size];
 		this->fill_array();
 	}
 	~Array() {
-		delete [] this->ptr;
+		delete[] this->ptr;
 	}
-	Array(const Array& obj) {
+	Array(const Array<T>& obj) {
 		delete[] this->ptr;
 		this->ptr = nullptr;
 		this->size = obj.size;
-		this->ptr = new int[this->size];
+		this->ptr = new T[this->size];
 		for (int i = 0; i < this->size; i++) {
 			this->ptr[i] = obj.ptr[i];
 		}
 	}
-	Array(Array&& obj) {
+	Array(Array<T>&& obj) {
 		std::cout << "Array move con-tor" << std::endl;
 		delete[] this->ptr;
 		this->ptr = nullptr;
@@ -35,19 +38,19 @@ public:
 		obj.ptr = nullptr;
 		obj.size = 0;
 	}
-	Array& operator = (const Array& obj) {
+	Array<T>& operator = (const Array<T>& obj) {
 		if (this != &obj) {
 			delete[] this->ptr;
 			this->ptr = nullptr;
 			this->size = obj.size;
-			this->ptr = new int[this->size];
+			this->ptr = new T[this->size];
 			for (int i = 0; i < this->size; i++) {
 				this->ptr[i] = obj.ptr[i];
 			}
 		}
 		return *this;
 	}
-	Array& operator = (Array&& obj) {
+	Array<T>& operator = (Array<T>&& obj) {
 		std::cout << "Array op. move assign." << std::endl;
 		if (this != &obj) {
 			delete[] this->ptr;
@@ -59,7 +62,7 @@ public:
 		}
 		return *this;
 	}
-	int& operator[] (int i){
+	T& operator[] (int i) {
 		if (i >= this->size || i < 0) {
 			std::cout << "The number is out of range" << std::endl << std::endl;
 			exit(0);
@@ -69,7 +72,7 @@ public:
 		}
 	}
 private:
-	int* ptr;
+	T* ptr;
 	int size;
 	void fill_array() {
 		for (int i = 0; i < this->size; i++) {
@@ -77,7 +80,7 @@ private:
 		}
 	}
 public:
-	int gen_element(int x) {
+	T gen_element(int x) {
 		if (x >= this->size || x < 0) {
 			std::cout << "The number is out of range" << std::endl << std::endl;
 			exit(0);
@@ -85,6 +88,28 @@ public:
 		else {
 			return this->ptr[x];
 		}
+	}
+	void push_back(T item) {
+		this->size++;
+		T* temp_ptr = this->ptr;
+		this->ptr = new T[this->size];
+		for (int i = 0; i < this->size - 1; i++) {
+			this->ptr[i] = temp_ptr[i];
+		}
+		this->ptr[this->size - 1] = item;
+		delete[] temp_ptr;
+		temp_ptr = nullptr;
+	}
+	void pop_back() {
+		this->size--;
+		T* temp_ptr = this->ptr;
+		this->ptr = new T[this->size];
+		for (int i = 0; i < this->size; i++) {
+			this->ptr[i] = temp_ptr[i];
+		}
+		//this->ptr[this->size - 1] = item;
+		delete[] temp_ptr;
+		temp_ptr = nullptr;
 	}
 	void print() {
 		std::cout << "{ ";
@@ -99,15 +124,22 @@ public:
 int main() {
 	srand(time(NULL));
 	std::cout << std::endl;
-	Array arr = std::move(Array(5));
-	std::cout << std::endl;
-	arr.print();
-	std::cout << std::endl << std::endl;
-	arr = std::move(Array(10));
-	std::cout << std::endl;
-	arr.print();
-	std::cout << std::endl << std::endl;
 
+	Array<int> arr_i;
+	std::cout << "Array of 10 elements: " << std::endl;
+	arr_i.print();
+
+	std::cout << std::endl;
+	arr_i.push_back(1000);
+	std::cout << "Array after call push_back(...): " << std::endl;
+	arr_i.print();
+	std::cout << std::endl;
+	arr_i.pop_back();
+	std::cout << "Array after call pop_back(): " << std::endl;
+	arr_i.print();
+	std::cout << std::endl;
+
+	//Array<double> arr_d;
+	//arr_d.print();
 	return 0;
 }
- 
